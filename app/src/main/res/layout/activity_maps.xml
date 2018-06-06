@@ -1,17 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <!-- Layout for the view Button -->
+    <!-- layout for the View button -->
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:weightSum="1">
+
+
+        <EditText
+            android:id="@+id/editText_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Search" />
+
+        <Button
+            android:id="@+id/button_search"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:onClick="onSearch"
+            android:text="Search">
+
+        </Button>
+
+        <Button
+            android:id="@+id/button_track"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="trackMyLocation"
+            android:text="Track" />
+
+        <Button
+            android:id="@+id/button_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onClear"
+            android:text="Clear" />
+
         <Button
             android:id="@+id/button_view"
             style="?android:attr/buttonStyleSmall"
@@ -19,11 +59,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:onClick="changeView"
-            android:text="View"></Button>
+            android:text="View">
+
+        </Button>
+
 
     </LinearLayout>
-
-
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"

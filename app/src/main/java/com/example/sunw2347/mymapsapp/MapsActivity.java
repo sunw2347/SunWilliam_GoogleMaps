@@ -2,12 +2,14 @@ package com.example.sunw2347.mymapsapp;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -95,14 +97,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } else
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        //Add a view button and method to switch between satellite and map views
         //LocationSearch = (EditText) findViewById(R.id.editText_addr);
-
         //gotMyLocationOneTIme = false;
     }
 
+    public void onClear(View view){
+        mMap.clear();
+    }
 
-    public void onSeach(View v) {
+
+    public void onSearch(View v) {
         String location = LocationSearch.getText().toString();
 
         List<Address> addressList = null;
@@ -152,7 +156,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 e.printStackTrace();
             }
             if (!addressList.isEmpty()) {
-                Log.d("MyMapsApp", "Addres list size: " + addressList.size());
+                Log.d("MyMapsApp", "Address list size: " + addressList.size());
                 for (int i = 0; i < addressList.size(); i++) {
                     Address address = addressList.get(i);
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
@@ -170,7 +174,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         {
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             //get GPS status
-            //isProviderEndabled returns true is user has enabled gps on phone
+            //isProviderEnabled returns true is user has enabled gps on phone
             isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             if(isGPSEnabled)
             {
@@ -216,6 +220,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         }
     }
+    LocationListener locationListenerGPS = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+
     //locationListener is an anonymous inner class
     //setup for callbacks from the requestLocationUpdates
     LocationListener locationListenerNetwork = new LocationListener(){
@@ -244,9 +270,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
 
+
+
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
             Log.d("MyMapsApp", "locationListenerNetwork: status change");
+            switch(status) {
+                case LocationProvider.AVAILABLE:
+                Log.d("MyMapsApp","Provider is available");
+                break;
+                case LocationProvider.OUT_OF_SERVICE:
+                //enable network updates
+                break;
+                case LocationProvider.TEMPORARILY_UNAVAILABLE:
+                break;
+                default:
+                //enable both network and gps;
+            }
 
         }
 
@@ -259,5 +299,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         public void onProviderDisabled(String provider) {
 
         }
+    };
+
+    public void dropAmarker(String provider){
+        /*if(locationManager != null)
+            if(checkSelfPermission() fails)
+                return;
+        myLocation = locationManager.getLastKnownLocation(provider)
+                LatLng userLocation = null;
+        if(myLocation == null) print log or toast
+                else
+                    userLocation = new LatLng(myLocation.getLatitude(), myLocation.getLongitude())
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(userLocation,MY_LOC_ZOOM_FACTOR)
+        if(provider == LocationManager.GPS_PROVIDER)
+            add circle for the marker with 2 outer rings(red)
+                mMap.addCircle(newCircleOptions())
+                .center(UserLocation)
+                .radius(1)
+                .strokeColor(Color.RED)
+                .strokeWidth(2)
+                .fillColor(Color.RED))
+        else
+            add circle for the marker with 2 outer rings (blue)
+                mMap.addCircle(newCircleOptions())
+                        .center(UserLocation)
+                        .radius(1)
+                        .strokeColor(Color.BLUE)
+                        .strokeWidth(2)
+                        .fillColor(Color.BLUE))
+        mMap.animateCamera(update);*/
+    }
+
+    public void trackMyLocation(View view){
+        //kick off the location tracker using getLocation to start the LocationListeners
+        //if(notTrackingMyLocation){
+        //      getLocation();
+        //      notTrackingMyLocation = false;
+        //      else{
+        //          removeUpdates for both network and gps;
+        //          notTrackingMyLocation = true;
+        //
+        //      }
+        // }
+
     }
 }
