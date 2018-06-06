@@ -102,7 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    /*public void onSeach(View v) {
+    public void onSeach(View v) {
         String location = LocationSearch.getText().toString();
 
         List<Address> addressList = null;
@@ -259,5 +259,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         public void onProviderDisabled(String provider) {
 
         }
-    }*/
+    }
 }
