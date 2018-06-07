@@ -38,7 +38,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private LocationManager locationManager;
 
-    private boolean gotMyLocationOneTIme;
+    private boolean gotMyLocationOneTime;
     private static final long MIN_TIME_BW_UPDATES = 1000*5;
     private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES  = 0.0F;
     private static final int MY_LOC_ZOOM_FACTOR = 17;
@@ -65,12 +65,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sanDiego = new LatLng(37.799, -117.154625);
+        LatLng sanDiego = new LatLng(32.7157, -117.1611);
         mMap.addMarker(new MarkerOptions().position(sanDiego).title("I was born here"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sanDiego));
 
@@ -89,6 +90,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.setMyLocationEnabled(true);
         }
 
+        LocationSearch = (EditText) findViewById(R.id.editText_search);
+        gotMyLocationOneTime = false;
+        getLocation();
+
     }
 
     public void changeView(View view) {
@@ -96,9 +101,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         } else
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-        //LocationSearch = (EditText) findViewById(R.id.editText_addr);
-        //gotMyLocationOneTIme = false;
     }
 
     public void onClear(View view){
@@ -137,7 +139,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         } catch (SecurityException | IllegalArgumentException e) {
-            Log.d("MyMapsApp", "Expection on getLastKnownLocation");
+            Log.d("MyMapsApp", "Expectation on getLastKnownLocation");
 
         }
         // Create Geocoder
@@ -146,10 +148,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             try {
                 addressList = geocoder.getFromLocationName(location, 100,
-                        userlocation.latitude - (5.0 / 60.0),
-                        userlocation.longitude - (5.0 / 60.0),
-                        userlocation.latitude - (5.0 / 60.0),
-                        userlocation.longitude - (5.0 / 60.0));
+                        userlocation.latitude,
+                        userlocation.longitude,
+                        userlocation.latitude,
+                        userlocation.longitude);
                 Log.d("MyMapsApp", "created addressList");
 
             } catch (IOException e) {
@@ -164,8 +166,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                 }
             }
-        }
-        {
         }
     }
     public void getLocation()
@@ -209,7 +209,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 if(isGPSEnabled)
                 {
-                    //launch locationlistenerGPS
+                    //launch locationlistener
                 }
             }
         }
@@ -251,7 +251,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.d("MyMapsApp", "getLocation: Network is enabled");
             dropAmarker(LocationManager.NETWORK_PROVIDER);
             // Check if doing one time via onMapReady, if so remove updates to both gps and network
-            if(gotMyLocationOneTIme==false)
+            if(gotMyLocationOneTime==false)
             {
                 locationManager.removeUpdates(this);
                 locationManager.removeUpdates(locationListenerGPS);
@@ -340,7 +340,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //          notTrackingMyLocation = true;
         //
         //      }
-        // }
+        //}
 
     }
 }
