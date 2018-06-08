@@ -22,10 +22,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            tools:text="Search" />
 
         <Button
-            android:id="@+id/button_search"
+            android:id="@+id/buttonSearch"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,15 +37,15 @@
         </Button>
 
         <Button
-            android:id="@+id/button_track"
+            android:id="@+id/buttonTrack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="trackMyLocation"
+            android:onClick="dropAmarker2"
             android:text="Track" />
 
         <Button
-            android:id="@+id/button_clear"
+            android:id="@+id/buttonClear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -52,7 +53,7 @@
             android:text="Clear" />
 
         <Button
-            android:id="@+id/button_view"
+            android:id="@+id/buttonView"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
