@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -47,10 +48,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean isGPSEnabled = false;
     private boolean notTrackingMyLocation = true;
 
-    private double lastLocationX = 0.0;
-    private double lastLocationY = 0.0;
-    private double currentLocationX = 0.0;
-    private double currentLocationY = 0.0;
+    private double x = 0.0;
+    private double y = 0.0;
+    private double x1 = 0.0;
+    private double y1 = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,9 +80,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sanDiego = new LatLng(32.7157, -117.1611);
-        mMap.addMarker(new MarkerOptions().position(sanDiego).title("I was born here"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sanDiego));
+        LatLng san_diego = new LatLng(32.7157, -117.1611);
+        mMap.addMarker(new MarkerOptions().position(san_diego).title("I was born here."));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(san_diego));
 
         /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.d("MyMapsApp", "Failed FINE permission check");
@@ -126,6 +127,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String provider = service.getBestProvider(criteria, false);
         Log.d("MyMapsApp", "on Search: location = " + location);
         Log.d("MyMapsApp", "on Search: provider = " + provider);
+        DecimalFormat df = new DecimalFormat("#.000");
 
         LatLng userlocation = null;
 
@@ -156,10 +158,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             try {
                 addressList = geocoder.getFromLocationName(location, 100,
-                        userlocation.latitude - 5/60,
-                        userlocation.longitude - 5/60,
-                        userlocation.latitude - 5/60,
-                        userlocation.longitude - 5/60);
+                        userlocation.latitude,
+                        userlocation.longitude,
+                        userlocation.latitude,
+                        userlocation.longitude);
                 Log.d("MyMapsApp", "created addressList");
 
             } catch (IOException e) {
@@ -170,7 +172,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 for (int i = 0; i < addressList.size(); i++) {
                     Address address = addressList.get(i);
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(latLng).title(i + ": " + address.getSubThoroughfare()));
+                    String a = addressList.get(0).getAddressLine(0);
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(a)); //location + " (" + df.format(myLocation.getLatitude()) + " , " + df.format(myLocation.getLongitude()) + ")")
                     mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                 }
             }
@@ -279,7 +282,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 locationManager.removeUpdates(locationListenerNetwork);
                 gotMyLocationOneTime = true;
             }
-            else {
+            /*else {
                 if(ActivityCompat.checkSelfPermission(MapsActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(MapsActivity.this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
                     return;
@@ -287,7 +290,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                         MIN_TIME_BW_UPDATES,
                         MIN_DISTANCE_CHANGE_FOR_UPDATES, locationListenerGPS);
-            }
+            }*/
 
 
         }
@@ -362,10 +365,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mMap.addMarker(new MarkerOptions().position(userLocation).title("Current Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
                 }
 
-                lastLocationX = currentLocationX;
-                lastLocationY = currentLocationY;
-                currentLocationX = myLocation.getLatitude();
-                currentLocationY = myLocation.getLongitude();
+                x = x1;
+                y = y1;
+                x1 = myLocation.getLatitude();
+                y1 = myLocation.getLongitude();
+                Log.d("MyMapsApp", "dropAmarker: tracking");
 
 
                 mMap.animateCamera(update);
@@ -378,38 +382,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    public void dropAmarker2(View view) {
-        LatLng userLocation = null;
-        try {
-            if (locationManager != null) {
-                if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-            }
-
-            if (((myLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)) != null)) {
-                userLocation = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-                CameraUpdate update = CameraUpdateFactory.newLatLngZoom(userLocation, MY_LOC_ZOOM_FACTOR);
-
-                mMap.addMarker(new MarkerOptions().position(userLocation).title("Current Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-
-
-                lastLocationX = currentLocationX;
-                lastLocationY = currentLocationY;
-                currentLocationX = myLocation.getLatitude();
-                currentLocationY = myLocation.getLongitude();
-
-
-                mMap.animateCamera(update);
-            } else {
-                Log.d("MyMapsApp", "dropAmarker: location is null");
-            }
-
-        } catch (SecurityException e) {
-            Log.d("MyMapsApp", "Exception in dropAmarker");
-        }
-    }
 
     public void trackMyLocation(View view) {
 
